@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import errorMiddleware from "./middleware/errorMiddleware.js";
 import { connectDb } from "./config/db.js";
 import cors from "cors";
+import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 const PORT = config.port;
@@ -22,7 +23,7 @@ app.use(cookieParser());
 
 // Ratelimiter
 
-// Routes
+app.use("/api/auth", authRoutes);
 
 app.use(errorMiddleware);
 
