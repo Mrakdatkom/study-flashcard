@@ -85,3 +85,12 @@ export async function getMe(req, res, next) {
         next(error);
     }
 }
+
+export async function logout(req, res, next) {
+    try {
+        res.cookie("token", "", { maxAge: 0 });
+        res.status(200).json({ success: true, message: "Logout successfully." });
+    } catch (error) {
+        next(error);
+    }
+}
