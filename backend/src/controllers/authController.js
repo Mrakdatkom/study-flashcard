@@ -63,3 +63,25 @@ export async function login(req, res, next) {
         next(error);
     }
 }
+
+export async function getMe(req, res, next) {
+    try {
+        if (!req.user) {
+            return res.status(404).json({ success: false, message: "Not authenticated." });
+        }
+
+        if (!req.user._id) {
+            return res.status(404).json({ success: false, message: "Invalid user data." });
+        }
+
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found." });
+        }
+
+        res.status(200).json({ success: true, data: user });
+    } catch (error) {
+        next(error);
+    }
+}
