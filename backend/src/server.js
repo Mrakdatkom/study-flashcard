@@ -6,6 +6,7 @@ import errorMiddleware from "./middleware/errorMiddleware.js";
 import { connectDb } from "./config/db.js";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
+import deckRoutes from "./routes/deckRoutes.js";
 
 const app = express();
 const PORT = config.port;
@@ -24,6 +25,7 @@ app.use(cookieParser());
 // Ratelimiter
 
 app.use("/api/auth", authRoutes);
+app.use("/api/decks", deckRoutes);
 
 app.use(errorMiddleware);
 
