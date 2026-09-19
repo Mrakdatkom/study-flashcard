@@ -15,3 +15,7 @@ const deckSchema = new mongoose.Schema({
         default: '',
     }
 }, { timestamps: true });
+
+const Deck = mongoose.model("Deck", deckSchema);
+
+export default Deck;
