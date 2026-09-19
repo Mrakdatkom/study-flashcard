@@ -17,3 +17,13 @@ export async function createDeck(req, res, next) {
         next(error);
     }
 }
+
+export async function getAllDecks(req, res, next) {
+    try {
+        const deck = await Deck.find({ ...req.ownerFilter }).sort({ createdAt: -1 });
+
+        res.status(200).json({ success: true, data: deck });
+    } catch (error) {
+        next(error);
+    }
+}
