@@ -41,3 +41,34 @@ export async function getSingleDeck(req, res, next) {
         next(error);
     }
 }
+
+export async function updateDeck(req, res, next) {
+    try {
+        const editableFields = ["title", "description"];
+        const updates = Object.fromEntries(
+            editableFields.filter((field) => Object.hasOwn(req.body, field)).map((field) => [field, req.body[field]])
+        );
+
+        // Check if there's any changes made
+        if (Object.keys(updates).length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Modify at least one field."
+            });
+        }
+
+        const updatedDeck = await Deck.findOneAndUpdate(
+            { _id: req.params.id, ...req.ownerFilter },
+            { $set: updates },
+            { returnDocument: "after", runValidators: true },
+        );
+
+        if (!updatedDeck) {
+            return res.status(404).json({ success: false, message: "Deck not found." });
+        }
+
+        res.status(200).json({ success: true, message: "Deck updated successfully", data: updatedDeck });
+    } catch (error) {
+        next(error);
+    }
+}
