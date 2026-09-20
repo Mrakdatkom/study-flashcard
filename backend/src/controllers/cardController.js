@@ -49,3 +49,30 @@ export async function getAllCards(req, res, next) {
         next(error);
     }
 }
+
+export async function getSingleCard(req, res, next) {
+    try {
+        const { deckId, cardId } = req.params;
+
+        // Find deck first
+        const deck = await Deck.findOne({
+            _id: deckId,
+            userId: req.user._id,
+        })
+
+        if (!deck) {
+            return res.status(404).json({ success: false, message: "Deck not found." });
+        }
+
+        // Find specific card under that deck
+        const card = await Card.findOne({ _id: cardId, deckId: deck._id });
+
+        if (!card) {
+            res.status(404).json({ success: false, message: "Card not found." });
+        }
+
+        res.status(200).json({ success: true, data: card });
+    } catch (error) {
+        next(error);
+    }
+}
