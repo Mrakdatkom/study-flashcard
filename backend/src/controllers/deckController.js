@@ -27,3 +27,17 @@ export async function getAllDecks(req, res, next) {
         next(error);
     }
 }
+
+export async function getSingleDeck(req, res, next) {
+    try {
+        const deck = await Deck.findOne({ _id: req.params.id, ...req.ownerFilter });
+
+        if (!deck) {
+            return res.status(404).json({ success: false, message: "Deck not found." });
+        }
+
+        return res.status(200).json({ success: true, data: deck });
+    } catch (error) {
+        next(error);
+    }
+}
