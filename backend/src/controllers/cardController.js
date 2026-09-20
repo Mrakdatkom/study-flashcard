@@ -119,3 +119,29 @@ export async function updateCard(req, res, next) {
         next(error);
     }
 }
+
+export async function deleteCard(req, res, next) {
+    try {
+        const { deckId, cardId } = req.params;
+
+        // Find deck first
+        const deck = await Deck.findOne({
+            _id: deckId,
+            userId: req.user._id,
+        })
+
+        if (!deck) {
+            return res.status(404).json({ success: false, message: "Deck not found." });
+        }
+
+        const deleteCard = await Card.findOneAndDelete({ _id: cardId, deckId: deck._id });
+
+        if (!deleteCard) {
+            return res.status(404).json({ success: false, message: "Card not found." });
+        }
+
+        res.status(200).json({ success: true, message: "Card deleted successfully." });
+    } catch (error) {
+        next(error);
+    }
+}
