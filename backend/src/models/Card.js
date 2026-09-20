@@ -8,6 +8,7 @@ const cardSchema = new mongoose.Schema({
     },
     question: {
         type: String,
+        unique: true,
         required: true,
     },
     answer: {
