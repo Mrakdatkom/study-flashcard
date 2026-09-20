@@ -76,3 +76,46 @@ export async function getSingleCard(req, res, next) {
         next(error);
     }
 }
+
+export async function updateCard(req, res, next) {
+    try {
+        const { deckId, cardId } = req.params;
+
+        // Find deck first
+        const deck = await Deck.findOne({
+            _id: deckId,
+            userId: req.user._id,
+        })
+
+        if (!deck) {
+            return res.status(404).json({ success: false, message: "Deck not found." });
+        }
+
+        const editableFields = ["question", "answer"];
+        const updates = Object.fromEntries(
+            editableFields.filter((field) => Object.hasOwn(req.body, field)).map((field) => [field, req.body[field]])
+        );
+
+        // Check if there's any changes made
+        if (Object.keys(updates).length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Modify at least one field."
+            });
+        }
+
+        const updatedCard = await Card.findOneAndUpdate(
+            { _id: cardId, deckId: deck._id },
+            { $set: updates },
+            { returnDocument: "after", runValidators: true },
+        );
+
+        if (!updatedCard) {
+            return res.status(404).json({ success: false, message: "Card not found." });
+        }
+
+        res.status(200).json({ success: true, message: "Card updated successfully.", data: updatedCard });
+    } catch (error) {
+        next(error);
+    }
+}
