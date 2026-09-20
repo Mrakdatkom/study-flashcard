@@ -72,3 +72,17 @@ export async function updateDeck(req, res, next) {
         next(error);
     }
 }
+
+export async function deleteDeck(req, res, next) {
+    try {
+        const deleteDeck = await Deck.findOneAndDelete({ _id: req.params.id, ...req.ownerFilter });
+
+        if (!deleteDeck) {
+            return res.status(404).json({ success: false, message: "Deck not found." });
+        }
+
+        res.status(200).json({ success: true, message: "Deck deleted successfully" });
+    } catch (error) {
+        next(error);
+    }
+}
