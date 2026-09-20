@@ -26,3 +26,26 @@ export async function createCard(req, res, next) {
         next(error);
     }
 }
+
+export async function getAllCards(req, res, next) {
+    try {
+        const { deckId } = req.params;
+
+        // Find deck first
+        const deck = await Deck.findOne({
+            _id: deckId,
+            userId: req.user._id,
+        });
+
+        if (!deck) {
+            return res.status(404).json({ success: false, message: "Deck not found." });
+        }
+
+        // If deck is present, find the card next under it
+        const cards = await Card.find({ deckId: deck._id }).sort({ createdAt: -1 });
+
+        res.status(200).json({ success: true, data: cards });
+    } catch (error) {
+        next(error);
+    }
+}
