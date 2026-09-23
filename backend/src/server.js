@@ -8,6 +8,7 @@ import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import deckRoutes from "./routes/deckRoutes.js";
 import cardRoutes from "./routes/cardRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
 
 const app = express();
 const PORT = config.port;
@@ -28,6 +29,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/decks", deckRoutes);
 app.use("/api/decks/:deckId/cards", cardRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 app.use(errorMiddleware);
 
